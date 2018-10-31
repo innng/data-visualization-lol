@@ -1,7 +1,6 @@
 import plotly.graph_objs as go
 import pandas as pd
 import plotly
-import math
 
 
 # colorscale
@@ -23,7 +22,7 @@ def main():
     # faz o join das colunas
     df = teambans_df.join(matches_df.set_index('matchid'), on='matchid').join(champion_df.set_index('championid'), on='championid')
 
-    # graph1(df)
+    graph1(df)
     graph2(df)
 
 
@@ -59,12 +58,11 @@ def graph1(df):
             x=ban_rate[0]['x'][:20],
             y=ban_rate[0]['y'][:20],
             orientation='h',
-            marker = dict(
+            marker=dict(
                 color=colors,
                 line=dict(
                     color='rgba(58, 71, 80, 0.6)',
-                    width=2)
-    )))
+                    width=2))))
 
     for i in range(1, len(ban_rate)):
         data.append(go.Bar(
@@ -72,7 +70,7 @@ def graph1(df):
             y=ban_rate[i]['y'][:20],
             orientation='h',
             visible=False,
-            marker = dict(
+            marker=dict(
                 color=colors,
                 line=dict(
                     color='rgba(58, 71, 80, 0.6)',
@@ -95,7 +93,7 @@ def graph1(df):
     annotations = [dict(text='', x=0, y=10, showarrow=False)]
 
     layout = dict(
-        title='Campeões Mais Banidos em Partidas Ranqueadas',
+        title='Campeões Mais Banidos em Partidas Ranqueadas por Temporadas',
         showlegend=False,
         updatemenus=updatemenus,
         annotations=annotations,
@@ -134,22 +132,22 @@ def graph2(df):
 
     bans_avg = [int(x) for x in bans_avg]
 
+    # plota os gráficos
     trace = go.Scatter(
         x=champions,
         y=bans_sum,
-        text=[x + '<br>Total de bans: ' + str(y) + '<br>Média de bans: ' + str(z) + '<br>Temporadas: ' + str(w) for x,y,z,w in zip(champions, bans_sum, bans_avg, seasons)],
+        text=[x + '<br>Total de bans: ' + str(y) + '<br>Média de bans: ' + str(z) + '<br>Temporadas: ' + str(w) for x, y, z, w in zip(champions, bans_sum, bans_avg, seasons)],
         mode='markers',
         marker=dict(
             color='rgba(64, 71, 136, 1)',
             size=bans_avg,
             sizemode='area',
             sizeref=(2. * max(bans_avg) / (180 ** 2)),
-            sizemin=4
-    ))
+            sizemin=4))
 
     layout = dict(
         title='Campeões Mais Banidos em Partidas Ranqueadas',
-        showlegend=False,yaxis={'title': 'Soma total de banimentos'})
+        showlegend=False, yaxis={'title': 'Soma total de banimentos'})
 
     fig = dict(data=[trace], layout=layout)
     plotly.offline.plot(fig, auto_open=True)
