@@ -23,7 +23,7 @@ def main():
     df = teambans_df.join(matches_df.set_index('matchid'), on='matchid').join(champion_df.set_index('championid'), on='championid')
 
     graph1(df)
-    graph2(df)
+    # graph2(df)
 
 
 # GRÁFICO 1: campeões mais banidos por temporada
@@ -52,8 +52,8 @@ def graph1(df):
 
         ban_rate.append({'y': champions, 'x': bans})
 
+    # plota os gráficos por temporada
     data = []
-
     data.append(go.Bar(
             x=ban_rate[0]['x'][:20],
             y=ban_rate[0]['y'][:20],
@@ -104,9 +104,50 @@ def graph1(df):
     plotly.offline.plot(fig, auto_open=True)
 
 
+# GRÁFICO 2: total de bans nos campeões
 def graph2(df):
-    pass
+    # agrupa os dados por campeões
+    champions = df.groupby('champion')
 
+    # conta os bans por campeão
+    ban_rate = []
+
+    for c in champions:
+        # conta os bans totais pro campeão
+        total = c[1].shape[0]
+
+        # agrupa por temporada
+        aux = c[1].groupby('seasonid')
+
+        # calcula a média de bans por temporada
+        values = []
+        for a in aux:
+            values.append(a[1].shape[0])
+        avg = sum(values)/len(values)
+
+        ban_rate.append((c[0], total, avg))
+
+    ban_rate.sort(key=lambda x: x[1], reverse=True)
+    champions, bans_sum, bans_avg = map(list, zip(*ban_rate))
+    ban_rate = {'x': champions, 'sum': bans_sum, 'avg': bans_avg}
+
+    index = [i for i in range(1, len(ban_rate['x']) + 1)]
+
+    # data = [{
+    #     'x': ban_rate['x'],
+    #     'y': ban_rate['sum'],
+    #     'mode': 'markers',
+    #     'marker': {
+    #         'color': [120, 125, 130, 135, 140, 145],
+    #         'size': [15, 30, 55, 70, 90, 110],
+    #         'showscale': True
+    #     }
+    # }]
+
+    # layout = dict()
+
+    # fig = dict(data=data, layout=layout)
+    # plotly.offline.plot(fig, auto_open=True)
 
 if __name__ == '__main__':
     main()
