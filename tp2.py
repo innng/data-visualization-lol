@@ -1,6 +1,7 @@
 import plotly.graph_objs as go
 import pandas as pd
 import plotly
+import math
 
 
 # colorscale
@@ -22,8 +23,8 @@ def main():
     # faz o join das colunas
     df = teambans_df.join(matches_df.set_index('matchid'), on='matchid').join(champion_df.set_index('championid'), on='championid')
 
-    graph1(df)
-    # graph2(df)
+    # graph1(df)
+    graph2(df)
 
 
 # GRÁFICO 1: campeões mais banidos por temporada
@@ -123,31 +124,36 @@ def graph2(df):
         values = []
         for a in aux:
             values.append(a[1].shape[0])
+
         avg = sum(values)/len(values)
+        ban_rate.append((c[0], total, avg, len(values)))
 
-        ban_rate.append((c[0], total, avg))
+    # classifca de acordo com número total de bans
+    ban_rate.sort(key=lambda x: x[0])
+    champions, bans_sum, bans_avg, seasons = map(list, zip(*ban_rate))
 
-    ban_rate.sort(key=lambda x: x[1], reverse=True)
-    champions, bans_sum, bans_avg = map(list, zip(*ban_rate))
-    ban_rate = {'x': champions, 'sum': bans_sum, 'avg': bans_avg}
+    bans_avg = [int(x) for x in bans_avg]
 
-    index = [i for i in range(1, len(ban_rate['x']) + 1)]
+    trace = go.Scatter(
+        x=champions,
+        y=bans_sum,
+        text=[x + '<br>Total de bans: ' + str(y) + '<br>Média de bans: ' + str(z) + '<br>Temporadas: ' + str(w) for x,y,z,w in zip(champions, bans_sum, bans_avg, seasons)],
+        mode='markers',
+        marker=dict(
+            color='rgba(64, 71, 136, 1)',
+            size=bans_avg,
+            sizemode='area',
+            sizeref=(2. * max(bans_avg) / (180 ** 2)),
+            sizemin=4
+    ))
 
-    # data = [{
-    #     'x': ban_rate['x'],
-    #     'y': ban_rate['sum'],
-    #     'mode': 'markers',
-    #     'marker': {
-    #         'color': [120, 125, 130, 135, 140, 145],
-    #         'size': [15, 30, 55, 70, 90, 110],
-    #         'showscale': True
-    #     }
-    # }]
+    layout = dict(
+        title='Campeões Mais Banidos em Partidas Ranqueadas',
+        showlegend=False,yaxis={'title': 'Soma total de banimentos'})
 
-    # layout = dict()
+    fig = dict(data=[trace], layout=layout)
+    plotly.offline.plot(fig, auto_open=True)
 
-    # fig = dict(data=data, layout=layout)
-    # plotly.offline.plot(fig, auto_open=True)
 
 if __name__ == '__main__':
     main()
