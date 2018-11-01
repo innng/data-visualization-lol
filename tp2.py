@@ -86,7 +86,7 @@ def graph1(df):
                 dict(label='Season 7', method='update', args=[{'visible': [False, False, False, False, True, False]}]),
                 dict(label='Season 8', method='update', args=[{'visible': [False, False, False, False, False, True]}]),
             ]),
-            direction='right', pad={'r': 10, 't': 10}, showactive=True, xanchor='left', yanchor='top', x=0.1, y=1.1
+            direction='right', pad={'r': 10, 't': 10}, showactive=True, xanchor='left', yanchor='top', x=0.1, y=1.13
         )
     ])
 
