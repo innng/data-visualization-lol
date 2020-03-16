@@ -4,6 +4,6 @@ Data Visualization assignment with the goal of creating interactives visualizaio
 
 [Database](https://www.kaggle.com/paololol/league-of-legends-ranked-matches/version/9)
 
-[Visualization 1](https://irscunha.github.io/data-visualization-lol/vis1/)
+[Visualization 1](https://innng.github.io/data-visualization-lol/vis1/)
 
-[Visualization 2](https://irscunha.github.io/data-visualization-lol/vis2/)
+[Visualization 2](https://innng.github.io/data-visualization-lol/vis2/)
